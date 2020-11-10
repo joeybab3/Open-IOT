@@ -1,5 +1,7 @@
 // Open IOT
-// Control/interface with you Electric Scooter
+// Control/interface with your Electric Scooter
+// Standalone version, does not require a backend
+// https://github.com/joeybab3/Open-IOT
 
 void setup() {
   // put your setup code here, to run once:
