@@ -224,11 +224,12 @@ void goHome()
 }
 
 String SendHTML(){
-  String page = "<!DOCTYPE html> <html>\n";
-  page +="<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
-  page +="<title>Scooter Control</title>\n";
-  page +="<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
-  page +="body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}#status {font-size: 36px;}\n";
+  String page = "<!DOCTYPE html>\n";
+  page += "<html>\n";
+  page += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
+  page += "<title>Scooter Config</title>\n";
+  page += "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
+  page += "body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}#status {font-size: 36px;}\n";
   page += ".button {display: block;width: 120px;background-color: #1abc9c;border: none;color: white;padding: 13px 30px;";
   page += "text-decoration: none;font-size: 25px;margin: 0px auto 35px;cursor: pointer;border-radius: 4px;}\n";
   page += ".button2 {display: inline;width: 100px;background-color: #1abc9c;border: none;color: white;padding: 13px 30px;";
@@ -280,6 +281,7 @@ String SendRestart(){
   page +="<small style='vertical-align: super;'>"+WiFi.localIP().toString()+" | "+WiFi.softAPIP().toString()+"</small>\n";
   page += "<script>\n";
   page += "var numFailures = 0;\n";
+  page += "var timer;\n";
   page +="function checkStatus()\n";
   page +="{\n";
   page +="var xhr = new XMLHttpRequest();\n";
@@ -293,6 +295,8 @@ String SendRestart(){
   page +="        if (xhr.status === 200) {\n";
   page +="            document.getElementById('status').style.color = 'green';\n";
   page += "           window.location.href = '/';\n";
+  page += "           clearInterval(timer);\n";
+  page += "           document.getElementById('timer').innerHTML = '0';\n";
   page +="        }\n";
   page +="        else\n";
   page +="        {\n";
@@ -320,7 +324,7 @@ String SendRestart(){
   page += "\t\tcheckStatus();\n";
   page += "\t\t}\n";
   page += "\t}\n";
-  page += "\tvar timer = setInterval(asecondhaspassed, 1000);\n";
+  page += "\ttimer = setInterval(asecondhaspassed, 1000);\n";
   page += "</script>\n";
   page +="</body>\n";
   
