@@ -1,6 +1,10 @@
 # Open-IOT
 Open Source IOT device software for electric scooters.
 
+# Disclaimer
+**THIS SOFTWARE IS ONLY TO BE USED ON LEGALLY ACQUIRED EX RENTAL OR PERSONAL DEVICES.**
+
+# About
 Scooters we aim to support:
 * Ninebot Max/SNSC 2.0
 * Ninebot ESX Series/SNSC 1.0
@@ -10,4 +14,6 @@ Scooters we aim to support:
 ** ES300
 ** ES400
 
-**NOTE: THIS SOFTWARE IS ONLY TO BE USED ON LEGALLY ACQUIRED EX RANTEL OR PERSONAL DEVICES.**
+# Installation
+Open-IOT is currently meant to be installed on an ESP8266 based board, with planned support for ESP32 in the future.
+Open the sketch of your choosing in the Arduino directory in this repo and upload it to your board.
