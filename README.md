@@ -14,6 +14,11 @@ Scooters we aim to support:
   * ES300
   * ES400
 
+Currently Supported Scooters
+Scooters we aim to support:
+* Okai Electisan Unpatched Models
+  * ES100/Bird Zero
+  * ES200B
 # Installation
 Open-IOT is currently meant to be installed on an ESP8266 based board, with planned support for ESP32 in the future.
 Open the sketch of your choosing in the Arduino directory in this repo and upload it to your board.
