@@ -45,8 +45,9 @@ bool debug = false;
 bool isBit4 = false; // "Fast Acceleration"
 bool isBit7 = false;
 bool isBit8 = false;
+bool hasConnection = false;
 
-const char* ssid = "vehicle";
+const char* ssid = "vehicle0001";
 const char* password = "SPINB0001";
 
 // The packet structure, 00 is a placeholder for the command, a speed variable, and the Checksum
@@ -89,12 +90,52 @@ void sendCommand()
 void restartEsp()
 {
     server.send(200, "text/html", SendRestart());
-    delay(500);
+    tone2(D5, 1046, 20);
+    delay(20);
+    tone2(D5, 785, 20);
+    delay(20);
+    tone2(D5, 523, 20);
+    delay(100);
+    tone2(D5, 1046, 20);
+    delay(20);
+    tone2(D5, 785, 20);
+    delay(20);
+    tone2(D5, 523, 20);
+    delay(100);
+    tone2(D5, 1046, 20);
+    delay(20);
+    tone2(D5, 785, 20);
+    delay(20);
+    tone2(D5, 523, 20);
+    delay(1000);
     ESP.restart();
 }
 
+void handleConnectionChange()
+{
+    if(WiFi.status() == WL_CONNECTED)
+    {
+        tone2(D5, 523, 100);
+        tone2(D5, 785, 100);
+        tone2(D5, 1046, 100);
+    }
+    else
+    {
+        tone2(D5, 659, 100);
+        tone2(D5, 587, 100);
+        tone2(D5, 554, 100);
+    }
+    hasConnection = (WiFi.status() == WL_CONNECTED);
+}
+
+
 void setup()
 {
+    tone2(D5, 523, 20);
+    tone2(D5, 785, 20);
+    tone2(D5, 1046, 20);
+    tone2(D5, 785, 20);
+    tone2(D5, 523, 20);
     Serial.begin(115200);
     delay(10);
     
@@ -103,17 +144,17 @@ void setup()
     wm.setConfigPortalBlocking(false);
 
     if(wm.autoConnect(ssid,password)){
-        Serial.println("Connected");
+        handleConnectionChange();
     }
     else {
-        Serial.println("No");
+        handleConnectionChange();
     }
     
     delay(100);
     
     pinMode(enablePin, OUTPUT);
     
-    MDNS.begin("joeybabcock.me");
+    MDNS.begin(ssid);
     MDNS.addService("http", "tcp", 80);
     
     ArduinoOTA.onStart([]() {
@@ -123,17 +164,24 @@ void setup()
       } else { // U_FS
         type = "filesystem";
       }
-  
       // NOTE: if updating FS this would be the place to unmount FS using FS.end()
       Serial.println("Start updating " + type);
+      pinMode (D5, OUTPUT );
     });
     
     ArduinoOTA.onEnd([]() {
+        analogWrite(D5,500);
+        delay(10);
+        analogWrite(D5,0);
         //Serial.println("\nEnd");
     });
     
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-        //Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+        float freq = ((float)progress/(float)total);
+        int freq2 = (int)(freq*2093);
+        analogWrite(D5,0);
+        analogWriteFreq(freq2);
+        analogWrite(D5,500);
     });
     
     ArduinoOTA.onError([](ota_error_t error) {
@@ -153,68 +201,75 @@ void setup()
     
     //ArduinoOTA.setPassword("8266!");
     ArduinoOTA.begin();
-
-    server.on("/", handle_OnConnect);
-    server.onNotFound(handle_NotFound);
-    server.on("/default", setDefaultConfig);
-    server.on("/power", power);
-    server.on("/headlight", headlight);
-    server.on("/headlightOn", enableHeadlight);
-    server.on("/headlightOff", disableHeadlight);
-    server.on("/flash", flash);
-    server.on("/units", setUnitSystem);
-    server.on("/restart", restartEsp);
-    server.on("/ping", ping);
-    server.on("/toggle4", toggleBit4);
-    server.on("/toggle7", toggleBit7);
-    server.on("/toggle8", toggleBit8);
-
-    server.begin();
-    setDefaultConfig(); 
-    Serial.begin(9600);
-    pinMode(enablePin, OUTPUT);
-    digitalWrite(enablePin, HIGH);
+    if(hasConnection)
+    {
+        server.on("/", handle_OnConnect);
+        server.onNotFound(handle_NotFound);
+        server.on("/default", setDefaultConfig);
+        server.on("/power", power);
+        server.on("/headlight", headlight);
+        server.on("/headlightOn", enableHeadlight);
+        server.on("/headlightOff", disableHeadlight);
+        server.on("/flash", flash);
+        server.on("/units", setUnitSystem);
+        server.on("/restart", restartEsp);
+        server.on("/ping", ping);
+        server.on("/toggle4", toggleBit4);
+        server.on("/toggle7", toggleBit7);
+        server.on("/toggle8", toggleBit8);
+    
+        server.begin();
+        setDefaultConfig(); 
+        Serial.begin(9600);
+        pinMode(enablePin, OUTPUT);
+        digitalWrite(enablePin, HIGH);
+    }
 }
 
 void loop()
 {
-    if(loopCount > 1000)
+    if(loopCount > 3600)
     {
         restartEsp();
     }
-    else if(loopCount < 5 && WiFi.status() != WL_CONNECTED) {
+    else if(loopCount < 30 && WiFi.status() != WL_CONNECTED)
+    {
         wm.process();
-        delay(1000);
+        MDNS.update();
+        ArduinoOTA.handle();
+        sendCommand();
+        yield();
+        delay(HEARTBEAT_INTERVAL);
+        if(hasConnection != (WiFi.status() == WL_CONNECTED))
+        {
+            handleConnectionChange();
+        }
     }
     else
     {
-      MDNS.update();
-      ArduinoOTA.handle();
-      server.handleClient();
-      sendCommand();
-      yield();
-      delay(HEARTBEAT_INTERVAL);
+        MDNS.update();
+        ArduinoOTA.handle();
+        server.handleClient();
+        sendCommand();
+        yield();
+        delay(HEARTBEAT_INTERVAL);
+        if(hasConnection != (WiFi.status() == WL_CONNECTED))
+        {
+            handleConnectionChange();
+        }
     }
     loopCount++;
 }
 
 void handle_OnConnect() {
-  server.sendHeader("Connection", "close");
-  server.send(200, "text/html", SendHTML()); 
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", SendHTML()); 
 }
 
-void handle_NotFound(){
+void handle_NotFound()
+{
     server.sendHeader("Location", "/", true); //Redirect to our html web page 
     server.send(302, "text/plane","");
-}
-
-
-void handle_okai() {
-  Serial.begin(9600);
-  pinMode(enablePin, OUTPUT);
-  digitalWrite(enablePin, HIGH);
-  enableFastAcceleration();
-  server.send(200, "text/html", SendHTML());
 }
 
 void goHome()
@@ -244,13 +299,16 @@ String SendHTML(){
   page +="<body>\n";
   page +="<h1>Scooter Config</h1>\n";
   page +="<a class=\"button ";
-  if(!isRunning){page += "button-off";}
+  if(!isRunning)
+  {page += "button-off";}
   page += "\" href=\"/power\">POWER</a>\n";
   page +="<a class=\"button ";
-  if(!headlightStatus){page += "button-off";}
+  if(!headlightStatus)
+  {page += "button-off";}
   page += "\" href=\"/headlight\">HEADLIGHT</a>\n";
   page += "<a class=\"button ";
-  if(!flashStatus){page += "button-off";}
+  if(!flashStatus)
+  {page += "button-off";}
   page += "\" href=\"/flash\">LIGHT FLASH</a>\n";
   page += "<a class=\"button button-off\" href=\"/units\">";
   if(!isMetric)
@@ -260,7 +318,7 @@ String SendHTML(){
   page += "</a>\n";
   page +="<a class=\"button button-off\" href=\"/restart\">RESTART</a>\n";
   page += "<span id='status'>&bull; 0x"+String(okaiPacket[3], HEX)+" </span>\n";
-  page +="<small style='vertical-align: super;'>"+WiFi.localIP().toString()+" | "+WiFi.softAPIP().toString()+"</small>\n";
+  page +="<small style='vertical-align: super;'><a href='//"+WiFi.localIP().toString()+"'>"+WiFi.localIP().toString()+"</a> | <a href='//"+WiFi.softAPIP().toString()+"'>"+WiFi.softAPIP().toString()+"</a></small>\n";
   page +="</body>\n";
   page +="</html>\n";
   return page;
