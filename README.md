@@ -22,3 +22,7 @@ Scooters we aim to support:
 # Installation
 Open-IOT is currently meant to be installed on an ESP8266 based board, with planned support for ESP32 in the future.
 Open the sketch of your choosing in the Arduino directory in this repo and upload it to your board.
+
+## Arduino
+
+Download and install [FastCRC](https://github.com/FrankBoesing/FastCRC).
