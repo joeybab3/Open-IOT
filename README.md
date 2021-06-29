@@ -2,7 +2,7 @@
 Open Source IOT device software for electric scooters.
 
 # Disclaimer
-**THIS SOFTWARE IS ONLY TO BE USED ON LEGALLY ACQUIRED EX RENTAL OR PERSONAL DEVICES.**
+**THIS SOFTWARE IS ONLY TO BE USED ON LEGALLY ACQUIRED EX-RENTAL OR PERSONAL DEVICES.**
 
 # About
 Scooters we aim to support:
@@ -14,8 +14,7 @@ Scooters we aim to support:
   * ES300
   * ES400
 
-Currently Supported Scooters
-Scooters we aim to support:
+Currently Supported Scooters:
 * Okai Electisan Unpatched Models
   * ES100/Bird Zero
   * ES200B
