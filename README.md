@@ -4,6 +4,8 @@ Open Source IOT device software for electric scooters.
 # Disclaimer
 **THIS SOFTWARE IS ONLY TO BE USED ON LEGALLY ACQUIRED EX-RENTAL OR PERSONAL DEVICES.**
 
+**NO HELP WILL BE GIVEN TO UNLAWFULLY ACQUIRED DEVICES AND THEFT IS NOT CONDONED NOR TOLERATED.**
+
 # About
 Scooters we aim to support:
 * Ninebot Max/SNSC 2.0
