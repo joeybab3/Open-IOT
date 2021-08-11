@@ -25,3 +25,4 @@ Open the sketch of your choosing in the Arduino directory in this repo and uploa
 ## Arduino
 
 Download and install [FastCRC](https://github.com/FrankBoesing/FastCRC).
+Download and install [WiFiManager](https://github.com/tzapu/WiFiManager)
