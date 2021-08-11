@@ -23,6 +23,9 @@
 #define HEARTBEAT_INTERVAL 500
 #define PACKET_SIZE 5
 
+#define OKAI 0
+#define LIME 1
+
 FastCRC8 CRC8;
 ESP8266WebServer server(80);
 WiFiManager wm;
@@ -33,7 +36,7 @@ IPAddress subnet(255,255,255,0);
 
 uint32_t crc;
 int loopCount = 0;
-int model = 0;
+int model = OKAI;
 const int enablePin = 15;
 
 bool isRunning = false;
