@@ -13,8 +13,6 @@ Scooters we aim to support:
 * Okai Electisan Unpatched Models
   * ES100/Bird Zero
   * ES200B
-  * ES300
-  * ES400
 
 Currently Supported Scooters:
 * Okai Electisan Unpatched Models
